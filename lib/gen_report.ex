@@ -55,6 +55,7 @@ defmodule GenReport do
     Map.put(report, name, report[name] + hours)
   end
 
-  defp all_hours(parsed_file),
-    do: Enum.reduce(parsed_file, report_acc(), fn line, report -> total_hours(line, report) end)
+  defp all_hours(parsed_file) do
+    Enum.reduce(parsed_file, report_acc(), fn line, report -> total_hours(line, report) end)
+  end
 end
