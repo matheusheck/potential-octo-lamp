@@ -42,6 +42,8 @@ defmodule GenReport do
   end
 
   defp freelancers_acc, do: Enum.into(@freelancers, %{}, &{&1, 0})
+  defp month_acc, do: Enum.into(@months, %{}, &{&1, 0})
+  # defp years_acc, do: Enum.into(2016..2020, %{}, &{&1, 0})
 
   defp get_hours(parsed_file) do
     %{
