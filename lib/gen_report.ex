@@ -41,7 +41,7 @@ defmodule GenReport do
     |> get_hours()
   end
 
-  defp report_acc, do: Enum.into(@freelancers, %{}, &{&1, 0})
+  defp freelancers_acc, do: Enum.into(@freelancers, %{}, &{&1, 0})
 
   defp get_hours(parsed_file) do
     %{
@@ -56,6 +56,10 @@ defmodule GenReport do
   end
 
   defp all_hours(parsed_file) do
-    Enum.reduce(parsed_file, report_acc(), fn line, report -> total_hours(line, report) end)
+    Enum.reduce(parsed_file, freelancers_acc(), fn line, report -> total_hours(line, report) end)
+  end
+
+  defp month_hours(parsed_file) do
+    Enum.reduce(parsed_file, freelancers_acc(), fn line, report -> total_hours(line, report) end)
   end
 end
