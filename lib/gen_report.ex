@@ -14,20 +14,20 @@ defmodule GenReport do
     "Vinicius"
   ]
 
-  @months %{
-    1 => "janeiro",
-    2 => "fevereiro",
-    3 => "março",
-    4 => "abril",
-    5 => "maio",
-    6 => "junho",
-    7 => "julho",
-    8 => "agosto",
-    9 => "setembro",
-    10 => "outubro",
-    11 => "novembro",
-    12 => "dezembro"
-  }
+  @months [
+    "janeiro",
+    "fevereiro",
+    "março",
+    "abril",
+    "maio",
+    "junho",
+    "julho",
+    "agosto",
+    "setembro",
+    "outubro",
+    "novembro",
+    "dezembro"
+  ]
 
   @report %{
     all_hours: %{},
@@ -43,7 +43,7 @@ defmodule GenReport do
 
   defp freelancers_acc, do: Enum.into(@freelancers, %{}, &{&1, 0})
   defp month_acc, do: Enum.into(@freelancers, %{}, &{&1, month_list()})
-  defp month_list, do: Enum.into(1..12, %{}, &{&1, 0})
+  defp month_list, do: Enum.into(@months, %{}, &{&1, 0})
   defp years_acc, do: Enum.into(@freelancers, %{}, &{&1, years_list()})
   defp years_list, do: Enum.into(2016..2020, %{}, &{&1, 0})
 
@@ -67,7 +67,6 @@ defmodule GenReport do
 
   defp total_month_hours([name, hours, _day, month, _year], month_acc) do
     freela = month_acc[name]
-
     new_hours = Map.put(freela, month, freela[month] + hours)
     Map.put(month_acc, name, new_hours)
   end
@@ -75,12 +74,7 @@ defmodule GenReport do
   defp month_hours(parsed_file) do
     Enum.reduce(parsed_file, month_acc(), fn line, month_acc ->
       total_month_hours(line, month_acc)
-      |> name_months()
     end)
-  end
-
-  defp name_months(month_acc) do
-    Enum.map(month_acc, fn {k, v} -> {@months[k], v} end)
   end
 
   defp total_year_hours([name, hours, _day, _month, year], year_acc) do
