@@ -75,7 +75,12 @@ defmodule GenReport do
   defp month_hours(parsed_file) do
     Enum.reduce(parsed_file, month_acc(), fn line, month_acc ->
       total_month_hours(line, month_acc)
+      |> name_months()
     end)
+  end
+
+  defp name_months(month_acc) do
+    Enum.map(month_acc, fn {k, v} -> {@months[k], v} end)
   end
 
   defp total_year_hours([name, hours, _day, _month, year], year_acc) do
