@@ -44,13 +44,14 @@ defmodule GenReport do
   defp freelancers_acc, do: Enum.into(@freelancers, %{}, &{&1, 0})
   defp month_acc, do: Enum.into(@freelancers, %{}, &{&1, month_list()})
   defp month_list, do: Enum.into(1..12, %{}, &{&1, 0})
-  # defp years_acc, do: Enum.into(2016..2020, %{}, &{&1, 0})
+  defp years_acc, do: Enum.into(@freelancers, %{}, &{&1, years_list()})
+  defp years_list, do: Enum.into(2016..2020, %{}, &{&1, 0})
 
   defp get_hours(parsed_file) do
     %{
       all_hours: all_hours(parsed_file),
       hours_per_month: month_hours(parsed_file),
-      hours_per_year: "hours_per_year"
+      hours_per_year: year_hours(parsed_file)
     }
   end
 
@@ -74,6 +75,19 @@ defmodule GenReport do
   defp month_hours(parsed_file) do
     Enum.reduce(parsed_file, month_acc(), fn line, month_acc ->
       total_month_hours(line, month_acc)
+    end)
+  end
+
+  defp total_year_hours([name, hours, _day, _month, year], year_acc) do
+    freela = year_acc[name]
+
+    new_hours = Map.put(freela, year, freela[year] + hours)
+    Map.put(year_acc, name, new_hours)
+  end
+
+  defp year_hours(parsed_file) do
+    Enum.reduce(parsed_file, years_acc(), fn line, year_acc ->
+      total_year_hours(line, year_acc)
     end)
   end
 end
